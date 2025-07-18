@@ -1,0 +1,40 @@
+<div class="tudo">
+    <form action="">
+        <h1 class="display-4  fw-bold">Gerenciador de Músicas</h1>
+
+        <input type="text" placeholder="Nome" class="form-control" name="nome" [(ngModel)]="musica.nome">
+        <input type="text" placeholder="Artista" class="form-control" name="artista" [(ngModel)]="musica.artista">
+        <input type="text" placeholder="Gênero" class="form-control" name="genero" [(ngModel)]="musica.genero">
+
+        <input type="button" value="Cadastrar" class="btn btn-primary" *ngIf="btnCadastrar" (click)="cadastrar()">
+        <input type="button" value="Alterar" class="btn btn-warning" *ngIf="!btnCadastrar" (click)="editar()">
+        <input type="button" value="Remover" class="btn btn-danger" *ngIf="!btnCadastrar" (click)="remover()">
+        <input type="button" value="Cancelar" class="btn btn-secondary" *ngIf="!btnCadastrar" (click)="cancelar()">
+
+
+    </form>
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Artista</th>
+                <th>Gênero</th>
+                <th>Selecionar</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr *ngFor="let c of musicas; index as i">
+            <td>{{i + 1}}</td>
+            <td>{{c.nome}}</td>
+            <td>{{c.artista}}</td>
+            <td>{{c.genero}}</td>
+            <td><button class="btn btn-success" (click)="selecionarMusica(i)">Selecionar</button></td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>

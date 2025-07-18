@@ -1,8 +1,10 @@
 package com.example.api.controller;
 
 import com.example.api.entity.Musica;
-import com.example.api.repository.Repository;
+import com.example.api.service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,41 +12,50 @@ import org.springframework.web.bind.annotation.*;
 public class Controller {
 
     @Autowired
-    private Repository acao;
+    private Service service;
 
     @PostMapping("/")
-    public String cadastrar(@RequestBody Musica musica){
-        if (musica.getNome().isEmpty() || musica.getArtista().isEmpty() || musica.getGenero().isEmpty()){
+    public ResponseEntity<String> cadastrar(@RequestBody Musica musica){
 
-            return "Preencha todos os dados";
+        try {
+            return new ResponseEntity<>(service.save(musica), HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>("Algo deu errado", HttpStatus.BAD_REQUEST);
         }
-        acao.save(musica);
-        return "Musica cadastrada com sucesso!";
     }
 
     @GetMapping("/")
-    public Iterable<Musica> listar(){
+    public ResponseEntity<Iterable<Musica>> listar(){
 
-        return acao.findAll();
+        try{
+
+            return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PutMapping("/")
-    public String editar(@RequestBody Musica musica){
-        if (musica.getNome().isEmpty() || musica.getArtista().isEmpty() || musica.getGenero().isEmpty()){
+    @PutMapping("/{id}")
+    public ResponseEntity<String> editar(@RequestBody Musica musica, @PathVariable Long id){
 
-            return "Preencha todos os dados";
+        try {
+            return new ResponseEntity<>(service.editById(id, musica), HttpStatus.OK);
+
+        } catch (Exception e) {
+
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        acao.save(musica);
-        return "Musica editada com sucesso!";
+
     }
 
     @DeleteMapping("/{id}")
-    public String deletar(@PathVariable Long id){
-
-        if (!acao.existsById(id)){
-            return "Musica de id " + id + " não está cadastrada no sistema";
+    public ResponseEntity<String> deletar(@PathVariable Long id){
+        try {
+            return new ResponseEntity<>(service.deleteById(id), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("ID não encontrado", HttpStatus.BAD_REQUEST);
         }
-        acao.deleteById(id);
-        return "Musica deletada com sucesso!";
     }
 }
